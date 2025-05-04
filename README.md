@@ -30,4 +30,11 @@ ISA Details
 | STR         | 1000 xxxx sss ttt   | global_data_mem[Rs] = Rt | Stores Rt to data memory address Rs.            |
 | CONST       | 1001 ddddd IIII IIII | Rd = IMM8            | Loads 8-bit immediate into Rd (if Rd < 13).     |
 | HALT        | 1111 xxxx xxxx xxxx | done                  | Halts execution, signaling core completion.     |
-![image](https://github.com/user-attachments/assets/f4513cd3-ffa8-4ebc-835b-6168dd496e9b)
+
+Register File
+Each thread has 16 registers (8-bit each):
+
+R0 to R12: General-purpose, read/write.
+R13: Read-only, stores block_id.
+R14: Read-only, stores THREADS_PER_BLOCK.
+R15: Read-only, stores local thread index (0 to THREADS_PER_BLOCK-1). Writes to R13–R15 are ignored, enabling kernels to access block and thread metadata for SIMD execution
