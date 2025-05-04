@@ -41,3 +41,90 @@ R13: Read-only, stores block_id.
 R14: Read-only, stores THREADS_PER_BLOCK.
 
 R15: Read-only, stores local thread index (0 to THREADS_PER_BLOCK-1). Writes to R13–R15 are ignored, enabling kernels to access block and thread metadata for SIMD execution
+### ==============================================================================================
+
+gpu.sv
+Functionality: Acts as the top-level module that integrates all components of the tiny GPU.
+Responsibilities:
+Instantiates submodules such as dcr.sv, controller.sv (for data and program memory), dispatch.sv, and multiple compute_core.sv instances.
+Manages the overall control flow, including starting/resetting the GPU and signaling kernel execution completion.
+Connects submodules to external memory interfaces for program and data memory.
+
+### 2. dcr.sv
+Functionality: Implements the Device Control Register.
+Responsibilities:
+Stores the total number of threads (thread_count) to be executed for the kernel.
+Updates thread_count when the device control write enable signal is asserted.
+
+### 3. controller.sv (Data Memory)
+Functionality: Serves as the memory controller for data memory.
+Responsibilities:
+Manages read and write requests from load-store units (LSUs) in compute cores to external data memory.
+Arbitrates between multiple LSUs using a round-robin scheme.
+Interfaces with external data memory using valid/ready handshakes.
+
+### 4. controller.sv (Program Memory)
+Functionality: Serves as the memory controller for program memory.
+Responsibilities:
+Manages read requests from fetch units in compute cores to external program memory.
+Arbitrates between multiple fetch units using a round-robin scheme.
+Interfaces with external program memory using valid/ready handshakes (write operations are disabled as it’s read-only).
+
+### 5. dispatch.sv
+Functionality: Handles the dispatching of thread blocks to compute cores.
+Responsibilities:
+Organizes threads into blocks, each with up to THREADS_PER_BLOCK threads.
+Assigns thread blocks to compute cores, providing each with a block_id and thread count.
+Monitors compute core completion and signals when all blocks are processed.
+
+6. compute_core.sv
+Functionality: Processes one block of threads as a compute core.
+Responsibilities:
+Instantiates submodules like fetch.sv, decoder.sv, scheduler.sv, alu.sv, load_store_unit.sv, program_counter.sv, and registers.sv.
+Manages the fetch-decode-execute cycle for the thread block using a state machine.
+Executes instructions in a SIMD manner across active threads.
+
+### 7. fetch.sv
+Functionality: Fetches instructions from program memory within a compute core.
+Responsibilities:
+Retrieves instructions based on the current program counter (PC).
+Uses valid/ready handshakes with the program memory controller.
+Forwards fetched instructions to the decoder.
+
+### 8. decoder.sv
+Functionality: Decodes instructions within a compute core.
+Responsibilities:
+Interprets the 16-bit instruction, extracting opcode, register addresses, immediate values, and condition codes.
+Generates control signals (e.g., is_add, is_ldr) for instruction execution.
+
+### 9. scheduler.sv
+Functionality: Schedules threads within a compute core.
+Responsibilities:
+Determines active threads based on the block’s thread_count.
+Generates an active_threads mask to indicate which threads execute instructions.
+
+### 10. alu.sv
+Functionality: Performs arithmetic and logic operations, instantiated per thread.
+Responsibilities:
+Executes operations like ADD, SUB, MUL, DIV, and CMP based on the opcode.
+Sets condition codes (NZP) for comparison operations.
+
+### 11. load_store_unit.sv
+Functionality: Manages memory operations, instantiated per thread.
+Responsibilities:
+Handles load (LDR) and store (STR) instructions.
+Interfaces with the data memory controller using valid/ready handshakes.
+Ensures memory operation completion.
+
+### 12. program_counter.sv
+Functionality: Maintains the program counter within a compute core.
+Responsibilities:
+Tracks and updates the shared PC for the thread block.
+Adjusts the PC for sequential execution or branches.
+
+### 13. registers.sv
+Functionality: Provides a register file, instantiated per thread.
+Responsibilities:
+Maintains 16 registers (R0–R15), with R13–R15 as read-only metadata (e.g., block_id, thread_id).
+Supports reading from two registers and writing to one per cycle.
+This modular structure ensures clarity and maintainability, aligning with the tiny GPU’s educational purpose.
