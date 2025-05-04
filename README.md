@@ -77,7 +77,7 @@ Organizes threads into blocks, each with up to THREADS_PER_BLOCK threads.
 Assigns thread blocks to compute cores, providing each with a block_id and thread count.
 Monitors compute core completion and signals when all blocks are processed.
 
-6. compute_core.sv
+### 6. compute_core.sv
 Functionality: Processes one block of threads as a compute core.
 Responsibilities:
 Instantiates submodules like fetch.sv, decoder.sv, scheduler.sv, alu.sv, load_store_unit.sv, program_counter.sv, and registers.sv.
