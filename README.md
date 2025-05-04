@@ -35,6 +35,9 @@ Register File
 Each thread has 16 registers (8-bit each):
 
 R0 to R12: General-purpose, read/write.
+
 R13: Read-only, stores block_id.
+
 R14: Read-only, stores THREADS_PER_BLOCK.
+
 R15: Read-only, stores local thread index (0 to THREADS_PER_BLOCK-1). Writes to R13–R15 are ignored, enabling kernels to access block and thread metadata for SIMD execution
