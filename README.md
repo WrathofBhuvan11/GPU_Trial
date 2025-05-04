@@ -41,7 +41,7 @@ R13: Read-only, stores block_id.
 R14: Read-only, stores THREADS_PER_BLOCK.
 
 R15: Read-only, stores local thread index (0 to THREADS_PER_BLOCK-1). Writes to R13–R15 are ignored, enabling kernels to access block and thread metadata for SIMD execution
-### ==============================================================================================
+### =========================================================================
 
 gpu.sv
 Functionality: Acts as the top-level module that integrates all components of the tiny GPU.
