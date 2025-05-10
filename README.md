@@ -10,7 +10,7 @@ gpu.sv
     ├── fetch.sv
     ├── decoder.sv
     ├── scheduler.sv
-    ├── alu.sv (per thread)
+    ├── simple_alu.sv (per thread)
     ├── load_store_unit.sv (per thread)
     ├── program_counter.sv
     └── registers.sv (per thread)
