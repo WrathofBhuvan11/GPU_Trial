@@ -1,5 +1,5 @@
 # New_GPU
-SIMD Based basic GPU Implementation 
+SIMD Based basic GPU Implementation  (Work in progress)
 ```
 gpu.sv
 ├── dcr.sv
