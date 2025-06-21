@@ -2,11 +2,11 @@
 
 // ALU module: Performs arithmetic and comparison operations
 module simple_alu (
-    input wire [7:0] A, // First operand
-    input wire [7:0] B, // Second operand
-    input wire [3:0] operation, // Operation code (from opcode)
-    output reg [7:0] result, // Computation result
-    output reg [2:0] NZP // Condition codes: {Negative, Zero, Positive}
+    input logic [7:0] A, // First operand
+    input logic [7:0] B, // Second operand
+    input logic [3:0] operation, // Operation code (from opcode)
+    output logic [7:0] result, // Computation result
+    output logic [2:0] NZP // Condition codes: {Negative, Zero, Positive}
 );
 
     // Combinational logic for operations
