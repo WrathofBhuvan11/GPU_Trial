@@ -3,24 +3,24 @@
 
 // Decoder module: Decodes the 16-bit instruction into control signals for the compute core
 module decoder (
-    input wire [15:0] instruction, // 16-bit instruction from fetch unit
-    output reg [3:0] opcode, // 4-bit opcode
-    output reg [3:0] Rd, // Destination register
-    output reg [3:0] Rs, // Source register 1
-    output reg [3:0] Rt, // Source register 2
-    output reg [7:0] IMM8, // 8-bit immediate value
-    output reg [3:0] condition, // Condition codes for BRNzp
-    output reg is_nop, // Indicates NOP instruction
-    output reg is_branch, // Indicates BRNzp instruction
-    output reg is_cmp, // Indicates CMP instruction
-    output reg is_add, // Indicates ADD instruction
-    output reg is_sub, // Indicates SUB instruction
-    output reg is_mul, // Indicates MUL instruction
-    output reg is_div, // Indicates DIV instruction
-    output reg is_ldr, // Indicates LDR instruction
-    output reg is_str, // Indicates STR instruction
-    output reg is_const, // Indicates CONST instruction
-    output reg is_halt // Indicates HALT instruction
+    input logic [15:0] instruction, // 16-bit instruction from fetch unit
+    output logic [3:0] opcode, // 4-bit opcode
+    output logic [3:0] Rd, // Destination register
+    output logic [3:0] Rs, // Source register 1
+    output logic [3:0] Rt, // Source register 2
+    output logic [7:0] IMM8, // 8-bit immediate value
+    output logic [3:0] condition, // Condition codes for BRNzp
+    output logic is_nop, // Indicates NOP instruction
+    output logic is_branch, // Indicates BRNzp instruction
+    output logic is_cmp, // Indicates CMP instruction
+    output logic is_add, // Indicates ADD instruction
+    output logic is_sub, // Indicates SUB instruction
+    output logic is_mul, // Indicates MUL instruction
+    output logic is_div, // Indicates DIV instruction
+    output logic is_ldr, // Indicates LDR instruction
+    output logic is_str, // Indicates STR instruction
+    output logic is_const, // Indicates CONST instruction
+    output logic is_halt // Indicates HALT instruction
 );
 
     // Combinational decoding logic
