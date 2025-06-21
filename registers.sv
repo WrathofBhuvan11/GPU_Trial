@@ -2,18 +2,18 @@
 
 // Registers module: Per-thread register file with read-only registers R13-R15
 module registers (
-    input wire clk,
-    input wire reset,
-    input wire [3:0] read_addr1, // Address for first read port
-    input wire [3:0] read_addr2, // Address for second read port
-    output reg [7:0] read_data1, // Data from first read port
-    output reg [7:0] read_data2, // Data from second read port
-    input wire [3:0] write_addr, // Write address
-    input wire [7:0] write_data, // Data to write
-    input wire write_enable, // Enable write operation
-    input wire [7:0] block_id, // Block ID for R13
-    input wire [7:0] thread_id, // Thread ID for R15
-    input wire [7:0] threads_per_block // Threads per block for R14
+    input logic clk,
+    input logic reset,
+    input logic [3:0] read_addr1, // Address for first read port
+    input logic [3:0] read_addr2, // Address for second read port
+    output logic [7:0] read_data1, // Data from first read port
+    output logic [7:0] read_data2, // Data from second read port
+    input logic [3:0] write_addr, // Write address
+    input logic [7:0] write_data, // Data to write
+    input logic write_enable, // Enable write operation
+    input logic [7:0] block_id, // Block ID for R13
+    input logic [7:0] thread_id, // Thread ID for R15
+    input logic [7:0] threads_per_block // Threads per block for R14
 );
 
     reg [7:0] regs [0:12]; // General-purpose registers R0-R12
