@@ -2,8 +2,8 @@
 
 // Registers module: Per-thread register file with read-only registers R13-R15
 module registers (
-    input logic clk,
-    input logic reset,
+    input clk,
+    input reset,
     input logic [3:0] read_addr1, // Address for first read port
     input logic [3:0] read_addr2, // Address for second read port
     output logic [7:0] read_data1, // Data from first read port
