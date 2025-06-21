@@ -9,24 +9,24 @@ module compute_core #(
     parameter PROGRAM_MEM_DATA_BITS = 16,    // Program memory data width (16-bit instructions)
     parameter THREADS_PER_BLOCK = 4          // Number of threads per block
 ) (
-    input wire clk,                          // Clock signal
-    input wire reset,                        // Reset signal
-    input wire start,                        // Start signal to begin execution
-    output reg done,                         // Done signal when execution completes
-    input wire [7:0] block_id,               // Block ID for this core
-    input wire [$clog2(THREADS_PER_BLOCK):0] thread_count, // Number of active threads
-    output reg program_mem_read_valid,       // Program memory read request
-    output reg [PROGRAM_MEM_ADDR_BITS-1:0] program_mem_read_address, // Program memory address
-    input wire program_mem_read_ready,       // Program memory ready signal
-    input wire [PROGRAM_MEM_DATA_BITS-1:0] program_mem_read_data,    // Program memory data
-    output reg [THREADS_PER_BLOCK-1:0] data_mem_read_valid,          // Data memory read requests
-    output reg [DATA_MEM_ADDR_BITS-1:0] data_mem_read_address [THREADS_PER_BLOCK-1:0], // Data memory read addresses
-    input wire [THREADS_PER_BLOCK-1:0] data_mem_read_ready,          // Data memory read ready signals
-    input wire [DATA_MEM_DATA_BITS-1:0] data_mem_read_data [THREADS_PER_BLOCK-1:0],   // Data memory read data
-    output reg [THREADS_PER_BLOCK-1:0] data_mem_write_valid,         // Data memory write requests
-    output reg [DATA_MEM_ADDR_BITS-1:0] data_mem_write_address [THREADS_PER_BLOCK-1:0], // Data memory write addresses
-    output reg [DATA_MEM_DATA_BITS-1:0] data_mem_write_data [THREADS_PER_BLOCK-1:0],   // Data memory write data
-    input wire [THREADS_PER_BLOCK-1:0] data_mem_write_ready          // Data memory write ready signals
+    input clk,                          // Clock signal
+    input reset,                        // Reset signal
+    input logic start,                        // Start signal to begin execution
+    output logic done,                         // Done signal when execution completes
+    input logic [7:0] block_id,               // Block ID for this core
+    input logic [$clog2(THREADS_PER_BLOCK):0] thread_count, // Number of active threads
+    output logic program_mem_read_valid,       // Program memory read request
+    output logic [PROGRAM_MEM_ADDR_BITS-1:0] program_mem_read_address, // Program memory address
+    input logic program_mem_read_ready,       // Program memory ready signal
+    input logic [PROGRAM_MEM_DATA_BITS-1:0] program_mem_read_data,    // Program memory data
+    output logic [THREADS_PER_BLOCK-1:0] data_mem_read_valid,          // Data memory read requests
+    output logic [DATA_MEM_ADDR_BITS-1:0] data_mem_read_address [THREADS_PER_BLOCK-1:0], // Data memory read addresses
+    input logic [THREADS_PER_BLOCK-1:0] data_mem_read_ready,          // Data memory read ready signals
+    input logic [DATA_MEM_DATA_BITS-1:0] data_mem_read_data [THREADS_PER_BLOCK-1:0],   // Data memory read data
+    output logic [THREADS_PER_BLOCK-1:0] data_mem_write_valid,         // Data memory write requests
+    output logic [DATA_MEM_ADDR_BITS-1:0] data_mem_write_address [THREADS_PER_BLOCK-1:0], // Data memory write addresses
+    output logic [DATA_MEM_DATA_BITS-1:0] data_mem_write_data [THREADS_PER_BLOCK-1:0],   // Data memory write data
+    input logic [THREADS_PER_BLOCK-1:0] data_mem_write_ready          // Data memory write ready signals
 );
 
     // Internal signals
