@@ -6,16 +6,16 @@ module fetch #(
     parameter PROGRAM_MEM_ADDR_BITS = 8,
     parameter PROGRAM_MEM_DATA_BITS = 16
 ) (
-    input wire clk,
-    input wire reset,
-    input wire enable, // Signal to start fetching
-    input wire [PROGRAM_MEM_ADDR_BITS-1:0] PC, // Program counter
-    output reg program_mem_read_valid, // Request to read from program memory
-    output reg [PROGRAM_MEM_ADDR_BITS-1:0] program_mem_read_address, // Memory address
-    input wire program_mem_read_ready, // Memory ready signal
-    input wire [PROGRAM_MEM_DATA_BITS-1:0] program_mem_read_data, // Fetched instruction
-    output reg [PROGRAM_MEM_DATA_BITS-1:0] instruction, // Output instruction
-    output reg fetch_done // Indicates fetch completion
+    input clk,
+    input reset,
+    input logic enable, // Signal to start fetching
+    input logic [PROGRAM_MEM_ADDR_BITS-1:0] PC, // Program counter
+    output logic program_mem_read_valid, // Request to read from program memory
+    output logic [PROGRAM_MEM_ADDR_BITS-1:0] program_mem_read_address, // Memory address
+    input logic program_mem_read_ready, // Memory ready signal
+    input logic [PROGRAM_MEM_DATA_BITS-1:0] program_mem_read_data, // Fetched instruction
+    output logic [PROGRAM_MEM_DATA_BITS-1:0] instruction, // Output instruction
+    output logic fetch_done // Indicates fetch completion
 );
 
     // State machine states
