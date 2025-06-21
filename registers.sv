@@ -16,7 +16,7 @@ module registers (
     input logic [7:0] threads_per_block // Threads per block for R14
 );
 
-    reg [7:0] regs [0:12]; // General-purpose registers R0-R12
+    logic [7:0] regs [0:12]; // General-purpose registers R0-R12
 
     // Read logic: Handle reads from R0-R15, with R13-R15 being read-only
     always_comb begin
