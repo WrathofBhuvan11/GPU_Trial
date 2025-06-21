@@ -6,22 +6,22 @@ module load_store_unit #(
     parameter DATA_MEM_ADDR_BITS = 8,
     parameter DATA_MEM_DATA_BITS = 8
 ) (
-    input wire clk,
-    input wire reset,
-    input wire load_enable, // Enable load operation (LDR)
-    input wire store_enable, // Enable store operation (STR)
-    input wire [DATA_MEM_ADDR_BITS-1:0] address, // Memory address from Rs
-    input wire [DATA_MEM_DATA_BITS-1:0] store_data, // Data to store from Rt
-    output reg [DATA_MEM_DATA_BITS-1:0] load_data, // Loaded data for Rd
-    output reg data_mem_read_valid, // Read request to memory controller
-    output reg [DATA_MEM_ADDR_BITS-1:0] data_mem_read_address,
-    input wire data_mem_read_ready, // Memory read ready signal
-    input wire [DATA_MEM_DATA_BITS-1:0] data_mem_read_data,
-    output reg data_mem_write_valid, // Write request to memory controller
-    output reg [DATA_MEM_ADDR_BITS-1:0] data_mem_write_address,
-    output reg [DATA_MEM_DATA_BITS-1:0] data_mem_write_data,
-    input wire data_mem_write_ready, // Memory write ready signal
-    output reg lsu_done // Indicates operation completion
+    input clk,
+    input reset,
+    input logic load_enable, // Enable load operation (LDR)
+    input logic store_enable, // Enable store operation (STR)
+    input logic [DATA_MEM_ADDR_BITS-1:0] address, // Memory address from Rs
+    input logic [DATA_MEM_DATA_BITS-1:0] store_data, // Data to store from Rt
+    output logic [DATA_MEM_DATA_BITS-1:0] load_data, // Loaded data for Rd
+    output logic data_mem_read_valid, // Read request to memory controller
+    output logic [DATA_MEM_ADDR_BITS-1:0] data_mem_read_address,
+    input logic data_mem_read_ready, // Memory read ready signal
+    input logic [DATA_MEM_DATA_BITS-1:0] data_mem_read_data,
+    output logic data_mem_write_valid, // Write request to memory controller
+    output logic [DATA_MEM_ADDR_BITS-1:0] data_mem_write_address,
+    output logic [DATA_MEM_DATA_BITS-1:0] data_mem_write_data,
+    input logic data_mem_write_ready, // Memory write ready signal
+    output logic lsu_done // Indicates operation completion
 );
 
     // State machine states for managing load/store operations
