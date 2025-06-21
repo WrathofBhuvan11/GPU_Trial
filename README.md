@@ -3,8 +3,8 @@ SIMD Based basic GPU Implementation  (Work in progress)
 ```
 gpu.sv
 ├── dcr.sv
-├── controller.sv (for data memory)
-├── controller.sv (for program memory)
+├── data_mem_controller.sv (for data memory)
+├── prog_mem_controller.sv (for program memory)
 ├── dispatch.sv
 └── compute_core.sv (multiple instances)
     ├── fetch.sv
