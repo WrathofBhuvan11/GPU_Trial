@@ -4,11 +4,11 @@
 module program_counter #(
     parameter PROGRAM_MEM_ADDR_BITS = 8
 ) (
-    input wire clk,
-    input wire reset,
-    input wire load, // Load next_pc into PC (for branches)
-    input wire [PROGRAM_MEM_ADDR_BITS-1:0] next_pc, // Branch target or PC+1
-    output reg [PROGRAM_MEM_ADDR_BITS-1:0] PC // Current program counter
+    input clk,
+    input reset,
+    input logic load, // Load next_pc into PC (for branches)
+    input logic [PROGRAM_MEM_ADDR_BITS-1:0] next_pc, // Branch target or PC+1
+    output logic [PROGRAM_MEM_ADDR_BITS-1:0] PC // Current program counter
 );
 
     // Update PC on clock edge
