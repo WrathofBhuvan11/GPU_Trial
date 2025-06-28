@@ -1,5 +1,6 @@
 # New_GPU
 SIMD Based basic GPU Implementation  (Work in progress)
+TODO- Need to do verification and openLANE RTL-GDSII steps
 ```
 gpu.sv
 ├── dcr.sv
