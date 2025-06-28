@@ -150,7 +150,7 @@ module compute_core #(
     enum logic [2:0] {IDLE, FETCH, EXECUTE} state;
 
     always_ff @(posedge clk or negedge reset) begin
-        if (reset) begin
+        if (~reset) begin
             state <= IDLE;
             done <= 0;
             fetch_enable <= 0;
@@ -284,7 +284,7 @@ module compute_core #(
     end
 
     // Reset memory valid signals after completion
-    always_ff @(posedge clk or negedge reset) begin
+    always_ff @(posedge clk) begin
         for (int t = 0; t < THREADS_PER_BLOCK; t++) begin
             if (data_mem_read_valid[t] && data_mem_read_ready[t]) begin
                 data_mem_read_valid[t] <= 0;
