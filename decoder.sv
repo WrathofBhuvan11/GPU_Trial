@@ -104,7 +104,7 @@ module decoder (
                 is_halt = 1;
             end
             default: begin
-                // Handle invalid instructions gracefully
+                is_nop = 1;
             end
         endcase
     end
