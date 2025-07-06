@@ -20,7 +20,7 @@ module gpu #(
     input reset,                        // Reset signal
     // Kernel Execution
     input start,                        // Start signal to initiate kernel execution
-    output done,                        // Done signal when kernel execution completes
+    output logic done,                        // Done signal when kernel execution completes
     // Device Control Register
     input logic device_control_write_enable,  // Write enable for thread count
     input logic [7:0] device_control_data,    // Thread count data
