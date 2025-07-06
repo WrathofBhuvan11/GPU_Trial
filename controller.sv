@@ -33,18 +33,25 @@ module controller #(
     input logic [NUM_CHANNELS-1:0] mem_write_ready // Memory write ready signals
 );
 
+    // Compute the number of bits needed for consumer indices
+    localparam CONSUMER_BITS = (NUM_CONSUMERS > 1) ? $clog2(NUM_CONSUMERS) : 1;
+
     // Round-robin arbitration index to track the last assigned consumer
-    logic [$clog2(NUM_CONSUMERS)-1:0] current_consumer;
+    logic [CONSUMER_BITS-1:0] current_consumer;
+
+    // Next consumer index for arbitration
+    logic [CONSUMER_BITS-1:0] next_consumer;
 
     // Arbitration logic
     always_ff @(posedge clk or negedge reset) begin
         if (~reset) begin
-            // Initialize signals on reset
-            current_consumer <= 0;
-            consumer_read_ready <= '0;
-            consumer_write_ready <= '0;
-            mem_read_valid <= '0;
-            mem_write_valid <= '0;
+            // Initialize module-level registers on reset
+            current_consumer <= 0; // Start arbitration from consumer 0
+            next_consumer <= 0; // Initialize next consumer index
+            consumer_read_ready <= '0; // Clear all read ready signals
+            consumer_write_ready <= '0; // Clear all write ready signals
+            mem_read_valid <= '0; // Clear all memory read valid signals
+            mem_write_valid <= '0; // Clear all memory write valid signals
             // Initialize read data and memory addresses to zero
             for (int i = 0; i < NUM_CONSUMERS; i++) begin
                 consumer_read_data[i] <= '0;
@@ -55,38 +62,32 @@ module controller #(
                 mem_write_data[i] <= '0;
             end
         end else begin
-            // Temporary consumer index for round-robin arbitration
-            logic [$clog2(NUM_CONSUMERS)-1:0] temp_consumer;
-            temp_consumer = current_consumer;
-            // Flags to track channel assignments for reads and writes
-            logic [NUM_CHANNELS-1:0] read_assigned;
-            logic [NUM_CHANNELS-1:0] write_assigned;
-            read_assigned = '0;
-            write_assigned = '0;
-
-            // Initialize outputs
+            // Initialize outputs for the current cycle
             consumer_read_ready <= '0;
             mem_read_valid <= '0;
             if (WRITE_ENABLE) consumer_write_ready <= '0;
             if (WRITE_ENABLE) mem_write_valid <= '0;
 
+            // Initialize next consumer index for round-robin arbitration
+            next_consumer <= current_consumer;
+
             // Handle read requests
             for (int i = 0; i < NUM_CHANNELS; i++) begin
-                // Iterate through consumers to find the first valid request
+                logic assigned = 0; // Local flag to track if channel is assigned
+                // Iterate through consumers to find the first valid read request
                 for (int j = 0; j < NUM_CONSUMERS; j++) begin
-                    int consumer_idx = (temp_consumer + j) % NUM_CONSUMERS;
-                    // Assign channel if not already assigned and conditions are met
-                    if (!read_assigned[i] && consumer_read_valid[consumer_idx] && mem_read_ready[i]) begin
+                    int consumer_idx = (next_consumer + j) % NUM_CONSUMERS;
+                    if (!assigned && consumer_read_valid[consumer_idx] && mem_read_ready[i]) begin
                         mem_read_valid[i] <= 1; // Set memory read request
                         mem_read_address[i] <= consumer_read_address[consumer_idx]; // Set address
                         consumer_read_ready[consumer_idx] <= 1; // Signal consumer ready
                         consumer_read_data[consumer_idx] <= mem_read_data[i]; // Pass data
-                        read_assigned[i] <= 1; // Mark channel as assigned
-                        temp_consumer <= (consumer_idx + 1) % NUM_CONSUMERS; // Update consumer index
+                        assigned = 1; // Mark channel as assigned
+                        next_consumer <= (consumer_idx + 1) % NUM_CONSUMERS; // Update consumer index
                     end
                 end
                 // Clear valid signal if no consumer was assigned
-                if (!read_assigned[i]) begin
+                if (!assigned) begin
                     mem_read_valid[i] <= 0;
                 end
             end
@@ -94,29 +95,30 @@ module controller #(
             // Handle write requests if enabled
             if (WRITE_ENABLE) begin
                 for (int i = 0; i < NUM_CHANNELS; i++) begin
+                    logic assigned = 0; // Local flag to track if channel is assigned
                     // Iterate through consumers to find the first valid write request
-                    for (int j = 0; j < NUM_CONSUMERS; j++) begin
-                        int consumer_idx = (temp_consumer + j) % NUM_CONSUMERS;
-                        // Assign channel if not already assigned and conditions are met
-                        if (!write_assigned[i] && consumer_write_valid[consumer_idx] && mem_write_ready[i]) 
+                    for (int j = 0; j < NUM_CONSUMERS; j++) 
+                    begin
+                        int consumer_idx = (next_consumer + j) % NUM_CONSUMERS;
+                        if (!assigned && consumer_write_valid[consumer_idx] && mem_write_ready[i]) 
                         begin
                             mem_write_valid[i] <= 1; // Set memory write request
                             mem_write_address[i] <= consumer_write_address[consumer_idx]; // Set address
                             mem_write_data[i] <= consumer_write_data[consumer_idx]; // Set data
                             consumer_write_ready[consumer_idx] <= 1; // Signal consumer ready
-                            write_assigned[i] <= 1; // Mark channel as assigned
-                            temp_consumer <= (consumer_idx + 1) % NUM_CONSUMERS; // Update consumer index
+                            assigned = 1; // Mark channel as assigned
+                            next_consumer <= (consumer_idx + 1) % NUM_CONSUMERS; // Update consumer index
                         end
                     end
                     // Clear valid signal if no consumer was assigned
-                    if (!write_assigned[i]) begin
+                    if (!assigned) begin
                         mem_write_valid[i] <= 0;
                     end
                 end
             end
-            
+
             // Update current_consumer for the next cycle
-            current_consumer <= temp_consumer;
+            current_consumer <= next_consumer;
         end
     end
 endmodule
