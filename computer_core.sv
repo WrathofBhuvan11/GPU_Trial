@@ -1,4 +1,3 @@
-`default_nettype none
 `timescale 1ns/1ns
 
 // Compute Core module: Executes instructions for a block of threads in SIMD fashion
