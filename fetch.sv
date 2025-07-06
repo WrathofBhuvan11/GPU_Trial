@@ -1,4 +1,3 @@
-`default_nettype none
 `timescale 1ns/1ns
 
 // Fetch module: Retrieves instructions from program memory using a valid/ready handshake
