@@ -1,4 +1,3 @@
-`default_nettype none
 `timescale 1ns/1ns
 
 // Decoder module: Decodes the 16-bit instruction into control signals for the compute core
