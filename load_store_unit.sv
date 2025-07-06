@@ -1,4 +1,3 @@
-`default_nettype none
 `timescale 1ns/1ns
 
 // Load-Store Unit module: Handles memory load and store operations for a single thread
