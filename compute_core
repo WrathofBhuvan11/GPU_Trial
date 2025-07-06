@@ -1,6 +1,9 @@
 `timescale 1ns/1ns
 
 // Compute Core module: Executes instructions for a block of threads in SIMD fashion
+// > Manages a block of threads, each with dedicated registers, ALU, and LSU
+// > Uses a state machine (IDLE, FETCH, EXECUTE) to control instruction processing
+// > Uses THREADS_PER_BLOCK for generate loop, with active_threads as runtime mask
 module compute_core #(
     parameter DATA_MEM_ADDR_BITS = 8,        // Data memory address width (256 rows)
     parameter DATA_MEM_DATA_BITS = 8,        // Data memory data width (8-bit data)
@@ -34,7 +37,7 @@ module compute_core #(
     logic [3:0] opcode;                       // Opcode from instruction
     logic [3:0] Rd, Rs, Rt;                   // Register fields
     logic [7:0] IMM8;                         // Immediate value
-    logic [2:0] condition;                    // Condition codes for BRNzp
+    logic [3:0] condition;                    // Condition codes for BRNzp
     logic is_nop, is_branch, is_cmp, is_add, is_sub, is_mul, is_div, is_ldr, is_str, is_const, is_halt; // Control signals
     logic [7:0] reg_data1 [0:THREADS_PER_BLOCK-1]; // First operand data
     logic [7:0] reg_data2 [0:THREADS_PER_BLOCK-1]; // Second operand data
@@ -100,7 +103,7 @@ module compute_core #(
 
     // Per-thread instances for registers, ALU, and LSU
     generate
-        for (genvar t = 0; t < THREADS_PER_BLOCK; active_threads++) begin : threads
+        for (genvar t = 0; t < THREADS_PER_BLOCK; t = t + 1) begin : threads
             registers registers_inst (
                 .clk(clk),
                 .reset(reset),
