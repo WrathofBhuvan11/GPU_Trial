@@ -109,7 +109,6 @@ module gpu #(
         .NUM_CHANNELS(PROGRAM_MEM_NUM_CHANNELS),
         .WRITE_ENABLE(0)
     ) program_memory_controller (
-        // Program Memory Controller
         .clk(clk),
         .reset(reset),
         .consumer_read_valid(fetcher_read_valid),
