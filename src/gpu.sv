@@ -109,16 +109,32 @@ module gpu #(
         .NUM_CHANNELS(PROGRAM_MEM_NUM_CHANNELS),
         .WRITE_ENABLE(0)
     ) program_memory_controller (
+         // Program Memory Controller
+    controller #(
+        .ADDR_BITS(PROGRAM_MEM_ADDR_BITS),
+        .DATA_BITS(PROGRAM_MEM_DATA_BITS),
+        .NUM_CONSUMERS(NUM_FETCHERS),
+        .NUM_CHANNELS(PROGRAM_MEM_NUM_CHANNELS),
+        .WRITE_ENABLE(0)
+    ) program_memory_controller (
         .clk(clk),
         .reset(reset),
         .consumer_read_valid(fetcher_read_valid),
         .consumer_read_address(fetcher_read_address),
         .consumer_read_ready(fetcher_read_ready),
         .consumer_read_data(fetcher_read_data),
+        .consumer_write_valid('0), 
+        .consumer_write_address('0),
+        .consumer_write_data('0),
+        .consumer_write_ready(), 
         .mem_read_valid(program_mem_read_valid),
         .mem_read_address(program_mem_read_address),
         .mem_read_ready(program_mem_read_ready),
-        .mem_read_data(program_mem_read_data)
+        .mem_read_data(program_mem_read_data),
+        .mem_write_valid(), 
+        .mem_write_address(),
+        .mem_write_data(), 
+        .mem_write_ready('0)
     );
 
     // Dispatcher
