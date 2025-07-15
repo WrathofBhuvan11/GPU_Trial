@@ -76,14 +76,14 @@ module controller #(
                 logic assigned = 0; // Local flag to track if channel is assigned
                 // Iterate through consumers to find the first valid read request
                 for (int j = 0; j < NUM_CONSUMERS; j++) begin
-                    int consumer_idx = (next_consumer + j) % NUM_CONSUMERS;
+                    int consumer_idx = (int'(next_consumer) + j) % NUM_CONSUMERS; // Cast to int
                     if (!assigned && consumer_read_valid[consumer_idx] && mem_read_ready[i]) begin
                         mem_read_valid[i] <= 1; // Set memory read request
                         mem_read_address[i] <= consumer_read_address[consumer_idx]; // Set address
                         consumer_read_ready[consumer_idx] <= 1; // Signal consumer ready
                         consumer_read_data[consumer_idx] <= mem_read_data[i]; // Pass data
                         assigned = 1; // Mark channel as assigned
-                        next_consumer <= (consumer_idx + 1) % NUM_CONSUMERS; // Update consumer index
+                        next_consumer <= CONSUMER_BITS'(((consumer_idx + 1) % NUM_CONSUMERS));
                     end
                 end
                 // Clear valid signal if no consumer was assigned
@@ -99,7 +99,7 @@ module controller #(
                     // Iterate through consumers to find the first valid write request
                     for (int j = 0; j < NUM_CONSUMERS; j++) 
                     begin
-                        int consumer_idx = (next_consumer + j) % NUM_CONSUMERS;
+                        int consumer_idx = (int'(next_consumer) + j) % NUM_CONSUMERS;
                         if (!assigned && consumer_write_valid[consumer_idx] && mem_write_ready[i]) 
                         begin
                             mem_write_valid[i] <= 1; // Set memory write request
@@ -107,7 +107,7 @@ module controller #(
                             mem_write_data[i] <= consumer_write_data[consumer_idx]; // Set data
                             consumer_write_ready[consumer_idx] <= 1; // Signal consumer ready
                             assigned = 1; // Mark channel as assigned
-                            next_consumer <= (consumer_idx + 1) % NUM_CONSUMERS; // Update consumer index
+                            next_consumer <= CONSUMER_BITS'(((consumer_idx + 1) % NUM_CONSUMERS));
                         end
                     end
                     // Clear valid signal if no consumer was assigned
