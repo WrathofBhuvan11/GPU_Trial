@@ -1,0 +1,19 @@
+{
+  "DESIGN_NAME": "gpu",
+  "VERILOG_FILES": [ "dir::src/compute_core.sv",
+  "dir::src/controller.sv",
+  "dir::src/dcr.sv",
+  "dir::src/decoder.sv",
+  "dir::src/dispatch.sv",
+  "dir::src/fetch.sv",
+  "dir::src/gpu.sv",
+  "dir::src/load_store_unit.sv",
+  "dir::src/program_counter.sv",
+  "dir::src/registers.sv",
+  "dir::src/scheduler.sv",
+  "dir::src/simple_alu.sv"
+  ],
+  "CLOCK_PERIOD": 25,
+  "CLOCK_PORT": "clk"
+}
+
