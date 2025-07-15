@@ -1,4 +1,4 @@
-# New_GPU
+# GPU_Trial
 SIMD Based basic GPU Implementation  (Work in progress)
 
 (TODO- Need to do verification and openLANE RTL-GDSII steps)
