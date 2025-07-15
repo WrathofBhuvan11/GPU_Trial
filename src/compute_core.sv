@@ -39,19 +39,19 @@ module compute_core #(
     logic [7:0] IMM8;                         // Immediate value
     logic [3:0] condition;                    // Condition codes for BRNzp
     logic is_nop, is_branch, is_cmp, is_add, is_sub, is_mul, is_div, is_ldr, is_str, is_const, is_halt; // Control signals
-    logic [7:0] reg_data1 [0:THREADS_PER_BLOCK-1]; // First operand data
-    logic [7:0] reg_data2 [0:THREADS_PER_BLOCK-1]; // Second operand data
-    logic [7:0] write_data [0:THREADS_PER_BLOCK-1]; // Data to write to registers
-    logic write_enable [0:THREADS_PER_BLOCK-1];     // Register write enables
+    logic [7:0][THREADS_PER_BLOCK-1:0] reg_data1; // First operand data
+    logic [7:0][THREADS_PER_BLOCK-1:0] reg_data2; // Second operand data
+    logic [7:0][THREADS_PER_BLOCK-1:0] write_data; // Data to write to registers
+    logic [THREADS_PER_BLOCK-1:0] write_enable;     // Register write enables
     logic [3:0] write_addr;                         // Register write address
-    logic [7:0] alu_result [0:THREADS_PER_BLOCK-1]; // ALU results
-    logic [2:0] NZP [0:THREADS_PER_BLOCK-1];        // Per-thread NZP flags
+    logic [7:0][THREADS_PER_BLOCK-1:0] alu_result; // ALU results
+    logic [2:0][THREADS_PER_BLOCK-1:0] NZP;        // Per-thread NZP flags
     logic [THREADS_PER_BLOCK-1:0] active_threads;   // Active thread mask
     logic fetch_enable;                             // Enable fetch unit
     logic fetch_done;                               // Fetch completion signal
     logic load_pc;                                  // Load new PC value
     logic [PROGRAM_MEM_ADDR_BITS-1:0] next_pc;      // Next PC value
-    logic lsu_done [0:THREADS_PER_BLOCK-1];         // LSU completion signals
+    logic [THREADS_PER_BLOCK-1:0] lsu_done;         // LSU completion signals
 
     // Submodule instances
     fetch #(.PROGRAM_MEM_ADDR_BITS(PROGRAM_MEM_ADDR_BITS), .PROGRAM_MEM_DATA_BITS(PROGRAM_MEM_DATA_BITS)) fetch_inst (
