@@ -41,29 +41,29 @@ module gpu #(
 );
     // Internal signals
     logic [7:0] thread_count; // Thread count from device control register
-    reg [NUM_CORES-1:0] core_start; // Start signals for each core
-    reg [NUM_CORES-1:0] core_reset; // Reset signals for each core
-    reg [NUM_CORES-1:0] core_done;  // Done signals from each core
-    reg [7:0] core_block_id [NUM_CORES-1:0]; // Block IDs for each core
-    reg [$clog2(THREADS_PER_BLOCK):0] core_thread_count [NUM_CORES-1:0]; // Thread counts for each core
+    logic [NUM_CORES-1:0] core_start; // Start signals for each core
+    logic [NUM_CORES-1:0] core_reset; // Reset signals for each core
+    logic [NUM_CORES-1:0] core_done;  // Done signals from each core
+    logic [7:0] core_block_id [NUM_CORES-1:0]; // Block IDs for each core
+    logic [$clog2(THREADS_PER_BLOCK):0] core_thread_count [NUM_CORES-1:0]; // Thread counts for each core
 
     // LSU to Data Memory Controller Channels
     localparam NUM_LSUS = NUM_CORES * THREADS_PER_BLOCK; // Total number of LSUs
-    reg [NUM_LSUS-1:0] lsu_read_valid; // LSU read requests
-    reg [DATA_MEM_ADDR_BITS-1:0] lsu_read_address [NUM_LSUS-1:0]; // LSU read addresses
-    reg [NUM_LSUS-1:0] lsu_read_ready; // LSU read ready signals
-    reg [DATA_MEM_DATA_BITS-1:0] lsu_read_data [NUM_LSUS-1:0]; // LSU read data
-    reg [NUM_LSUS-1:0] lsu_write_valid; // LSU write requests
-    reg [DATA_MEM_ADDR_BITS-1:0] lsu_write_address [NUM_LSUS-1:0]; // LSU write addresses
-    reg [DATA_MEM_DATA_BITS-1:0] lsu_write_data [NUM_LSUS-1:0]; // LSU write data
-    reg [NUM_LSUS-1:0] lsu_write_ready; // LSU write ready signals
+    logic [NUM_LSUS-1:0] lsu_read_valid; // LSU read requests
+    logic [DATA_MEM_ADDR_BITS-1:0] lsu_read_address [NUM_LSUS-1:0]; // LSU read addresses
+    logic [NUM_LSUS-1:0] lsu_read_ready; // LSU read ready signals
+    logic [DATA_MEM_DATA_BITS-1:0] lsu_read_data [NUM_LSUS-1:0]; // LSU read data
+    logic [NUM_LSUS-1:0] lsu_write_valid; // LSU write requests
+    logic [DATA_MEM_ADDR_BITS-1:0] lsu_write_address [NUM_LSUS-1:0]; // LSU write addresses
+    logic [DATA_MEM_DATA_BITS-1:0] lsu_write_data [NUM_LSUS-1:0]; // LSU write data
+    logic [NUM_LSUS-1:0] lsu_write_ready; // LSU write ready signals
 
     // Fetcher to Program Memory Controller Channels
     localparam NUM_FETCHERS = NUM_CORES; // Total number of fetchers
-    reg [NUM_FETCHERS-1:0] fetcher_read_valid; // Fetcher read requests
-    reg [PROGRAM_MEM_ADDR_BITS-1:0] fetcher_read_address [NUM_FETCHERS-1:0]; // Fetcher read addresses
-    reg [NUM_FETCHERS-1:0] fetcher_read_ready; // Fetcher read ready signals
-    reg [PROGRAM_MEM_DATA_BITS-1:0] fetcher_read_data [NUM_FETCHERS-1:0]; // Fetcher read data
+    logic [NUM_FETCHERS-1:0] fetcher_read_valid; // Fetcher read requests
+    logic [PROGRAM_MEM_ADDR_BITS-1:0] fetcher_read_address [NUM_FETCHERS-1:0]; // Fetcher read addresses
+    logic [NUM_FETCHERS-1:0] fetcher_read_ready; // Fetcher read ready signals
+    logic [PROGRAM_MEM_DATA_BITS-1:0] fetcher_read_data [NUM_FETCHERS-1:0]; // Fetcher read data
 
     // Device Control Register
     dcr dcr_instance (
@@ -151,14 +151,14 @@ module gpu #(
     generate
         for (i = 0; i < NUM_CORES; i = i + 1) begin : cores
             // Separate signals for each core's LSUs due
-            reg [THREADS_PER_BLOCK-1:0] core_lsu_read_valid;
-            reg [DATA_MEM_ADDR_BITS-1:0] core_lsu_read_address [THREADS_PER_BLOCK-1:0];
-            reg [THREADS_PER_BLOCK-1:0] core_lsu_read_ready;
-            reg [DATA_MEM_DATA_BITS-1:0] core_lsu_read_data [THREADS_PER_BLOCK-1:0];
-            reg [THREADS_PER_BLOCK-1:0] core_lsu_write_valid;
-            reg [DATA_MEM_ADDR_BITS-1:0] core_lsu_write_address [THREADS_PER_BLOCK-1:0];
-            reg [DATA_MEM_DATA_BITS-1:0] core_lsu_write_data [THREADS_PER_BLOCK-1:0];
-            reg [THREADS_PER_BLOCK-1:0] core_lsu_write_ready;
+            logic [THREADS_PER_BLOCK-1:0] core_lsu_read_valid;
+            logic [DATA_MEM_ADDR_BITS-1:0] core_lsu_read_address [THREADS_PER_BLOCK-1:0];
+            logic [THREADS_PER_BLOCK-1:0] core_lsu_read_ready;
+            logic [DATA_MEM_DATA_BITS-1:0] core_lsu_read_data [THREADS_PER_BLOCK-1:0];
+            logic [THREADS_PER_BLOCK-1:0] core_lsu_write_valid;
+            logic [DATA_MEM_ADDR_BITS-1:0] core_lsu_write_address [THREADS_PER_BLOCK-1:0];
+            logic [DATA_MEM_DATA_BITS-1:0] core_lsu_write_data [THREADS_PER_BLOCK-1:0];
+            logic [THREADS_PER_BLOCK-1:0] core_lsu_write_ready;
 
             // Connect core's LSUs to global LSU signals
             genvar j;
