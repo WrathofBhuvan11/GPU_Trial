@@ -11,8 +11,8 @@ module dispatch #(
     input logic [NUM_CORES-1:0] core_done,   // Done signals from each core indicating block completion
     output logic [NUM_CORES-1:0] core_start, // Start signals to initiate execution on each core
     output logic [NUM_CORES-1:0] core_reset, // Reset signals to reset each core
-    output logic [7:0] core_block_id [NUM_CORES-1:0], // Block IDs assigned to each core
-    output logic [$clog2(THREADS_PER_BLOCK):0] core_thread_count [NUM_CORES-1:0], // Thread counts for each core's block
+    output logic [7:0][NUM_CORES-1:0] core_block_id, // Block IDs assigned to each core
+    output logic [$clog2(THREADS_PER_BLOCK):0][NUM_CORES-1:0] core_thread_count, // Thread counts for each core's block
     output logic done                        // Done signal indicating all blocks are processed
 );
     logic [7:0] num_blocks;                  // Total number of blocks needed for the kernel
