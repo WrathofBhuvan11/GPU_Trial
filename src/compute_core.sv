@@ -22,12 +22,12 @@ module compute_core #(
     input logic program_mem_read_ready,       // Program memory ready signal
     input logic [PROGRAM_MEM_DATA_BITS-1:0] program_mem_read_data,    // Program memory data
     output logic [THREADS_PER_BLOCK-1:0] data_mem_read_valid,          // Data memory read requests
-    output logic [DATA_MEM_ADDR_BITS-1:0] data_mem_read_address [THREADS_PER_BLOCK-1:0], // Data memory read addresses
+    output logic [DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] data_mem_read_address, // Data memory read addresses
     input logic [THREADS_PER_BLOCK-1:0] data_mem_read_ready,          // Data memory read ready signals
-    input logic [DATA_MEM_DATA_BITS-1:0] data_mem_read_data [THREADS_PER_BLOCK-1:0],   // Data memory read data
+    input logic [DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] data_mem_read_data,   // Data memory read data
     output logic [THREADS_PER_BLOCK-1:0] data_mem_write_valid,         // Data memory write requests
-    output logic [DATA_MEM_ADDR_BITS-1:0] data_mem_write_address [THREADS_PER_BLOCK-1:0], // Data memory write addresses
-    output logic [DATA_MEM_DATA_BITS-1:0] data_mem_write_data [THREADS_PER_BLOCK-1:0],   // Data memory write data
+    output logic [DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] data_mem_write_address, // Data memory write addresses
+    output logic [DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] data_mem_write_data,   // Data memory write data
     input logic [THREADS_PER_BLOCK-1:0] data_mem_write_ready          // Data memory write ready signals
 );
 
