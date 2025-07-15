@@ -152,12 +152,12 @@ module gpu #(
         for (i = 0; i < NUM_CORES; i = i + 1) begin : cores
             // Separate signals for each core's LSUs due
             logic [THREADS_PER_BLOCK-1:0] core_lsu_read_valid;
-            logic [DATA_MEM_ADDR_BITS-1:0] core_lsu_read_address [THREADS_PER_BLOCK-1:0];
+            logic [DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_address;
             logic [THREADS_PER_BLOCK-1:0] core_lsu_read_ready;
-            logic [DATA_MEM_DATA_BITS-1:0] core_lsu_read_data [THREADS_PER_BLOCK-1:0];
+            logic [DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_data;
             logic [THREADS_PER_BLOCK-1:0] core_lsu_write_valid;
-            logic [DATA_MEM_ADDR_BITS-1:0] core_lsu_write_address [THREADS_PER_BLOCK-1:0];
-            logic [DATA_MEM_DATA_BITS-1:0] core_lsu_write_data [THREADS_PER_BLOCK-1:0];
+            logic [DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_address;
+            logic [DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_data;
             logic [THREADS_PER_BLOCK-1:0] core_lsu_write_ready;
 
             // Connect core's LSUs to global LSU signals
