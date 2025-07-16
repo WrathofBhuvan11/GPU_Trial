@@ -28,7 +28,7 @@ module fetch #(
 
     // State machine to manage fetch process
     always_ff @(posedge clk or negedge reset) begin
-        if (reset) begin
+        if (~reset) begin
             state <= IDLE;
             program_mem_read_valid <= 0;
             program_mem_read_address <= 0;
