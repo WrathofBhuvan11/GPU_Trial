@@ -44,7 +44,7 @@ module gpu #(
     logic [NUM_CORES-1:0] core_start; // Start signals for each core
     logic [NUM_CORES-1:0] core_reset; // Reset signals for each core
     logic [NUM_CORES-1:0] core_done;  // Done signals from each core
-    logic [7:0] core_block_id [NUM_CORES-1:0]; // Block IDs for each core
+    logic [7:0][NUM_CORES-1:0] core_block_id; // Block IDs for each core
     logic [$clog2(THREADS_PER_BLOCK):0][NUM_CORES-1:0] core_thread_count; // Thread counts for each core
 
     // LSU to Data Memory Controller Channels
