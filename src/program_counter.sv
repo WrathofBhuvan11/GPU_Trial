@@ -13,7 +13,7 @@ module program_counter #(
 
     // Update PC on clock edge
     always_ff @(posedge clk or negedge reset) begin
-        if (reset) begin
+        if (~reset) begin
             PC <= 0; // Reset PC to start of program memory
         end else if (load) begin
             PC <= next_pc; // Load branch target for BRNzp
