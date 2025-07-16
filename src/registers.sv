@@ -45,7 +45,7 @@ module registers (
 
     // Write logic: Only write to R0-R12
     always_ff @(posedge clk or negedge reset) begin
-        if (reset) begin
+        if (~reset) begin
             for (int i = 0; i < 13; i++) begin
                 regs[i] <= 0; // Reset general-purpose registers
             end
