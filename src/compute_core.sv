@@ -45,7 +45,7 @@ module compute_core #(
     logic [THREADS_PER_BLOCK-1:0] write_enable;     // Register write enables
     logic [3:0] write_addr;                         // Register write address
     logic [7:0][THREADS_PER_BLOCK-1:0] alu_result; // ALU results
-    logic [2:0][THREADS_PER_BLOCK-1:0] NZP;        // Per-thread NZP flags
+    //logic [2:0][THREADS_PER_BLOCK-1:0] NZP;        // Per-thread NZP flags - (unused for now)
     logic [THREADS_PER_BLOCK-1:0] active_threads;   // Active thread mask
     logic fetch_enable;                             // Enable fetch unit
     logic fetch_done;                               // Fetch completion signal
@@ -124,7 +124,7 @@ module compute_core #(
                 .B(reg_data2[t]),
                 .operation(opcode),
                 .result(alu_result[t]),
-                .NZP(NZP[t])
+                .NZP()
             );
 
             load_store_unit #(.DATA_MEM_ADDR_BITS(DATA_MEM_ADDR_BITS), .DATA_MEM_DATA_BITS(DATA_MEM_DATA_BITS)) lsu_inst (
