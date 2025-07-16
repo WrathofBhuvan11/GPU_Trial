@@ -145,19 +145,19 @@ module gpu #(
         .core_thread_count(core_thread_count),
         .done(done)
     );
-
+    
     // Compute Cores - inst 
+    logic [NUM_CORES-1:0][DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_address;
+    logic [NUM_CORES-1:0][DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_address;
+    logic [NUM_CORES-1:0][DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_data;
+    logic [NUM_CORES-1:0][DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_data;
     genvar i;
     generate
         for (i = 0; i < NUM_CORES; i = i + 1) begin : cores
             // Separate signals for each core's LSUs due
             logic [THREADS_PER_BLOCK-1:0] core_lsu_read_valid;
-            logic [DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_address;
             logic [THREADS_PER_BLOCK-1:0] core_lsu_read_ready;
-            logic [DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_data;
             logic [THREADS_PER_BLOCK-1:0] core_lsu_write_valid;
-            logic [DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_address;
-            logic [DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_data;
             logic [THREADS_PER_BLOCK-1:0] core_lsu_write_ready;
 
             // Connect core's LSUs to global LSU signals
@@ -166,12 +166,12 @@ module gpu #(
                 localparam lsu_index = i * THREADS_PER_BLOCK + j;
                 always @(posedge clk) begin 
                     lsu_read_valid[lsu_index] <= core_lsu_read_valid[j];
-                    lsu_read_address[lsu_index] <= core_lsu_read_address[j];
+                    lsu_read_address[lsu_index] <= core_lsu_read_address[i][j];
                     lsu_write_valid[lsu_index] <= core_lsu_write_valid[j];
-                    lsu_write_address[lsu_index] <= core_lsu_write_address[j];
-                    lsu_write_data[lsu_index] <= core_lsu_write_data[j];
+                    lsu_write_address[lsu_index] <= core_lsu_write_address[i][j];
+                    lsu_write_data[lsu_index] <= core_lsu_write_data[i][j];
                     core_lsu_read_ready[j] <= lsu_read_ready[lsu_index];
-                    core_lsu_read_data[j] <= lsu_read_data[lsu_index];
+                    core_lsu_read_data[i][j] <= lsu_read_data[lsu_index];
                     core_lsu_write_ready[j] <= lsu_write_ready[lsu_index];
                 end
             end
@@ -195,12 +195,12 @@ module gpu #(
                 .program_mem_read_ready(fetcher_read_ready[i]),
                 .program_mem_read_data(fetcher_read_data[i]),
                 .data_mem_read_valid(core_lsu_read_valid),
-                .data_mem_read_address(core_lsu_read_address),
+                .data_mem_read_address(core_lsu_read_address[i]),
                 .data_mem_read_ready(core_lsu_read_ready),
-                .data_mem_read_data(core_lsu_read_data),
+                .data_mem_read_data(core_lsu_read_data[i]),
                 .data_mem_write_valid(core_lsu_write_valid),
-                .data_mem_write_address(core_lsu_write_address),
-                .data_mem_write_data(core_lsu_write_data),
+                .data_mem_write_address(core_lsu_write_address[i]),
+                .data_mem_write_data(core_lsu_write_data[i]),
                 .data_mem_write_ready(core_lsu_write_ready)
             );
         end
