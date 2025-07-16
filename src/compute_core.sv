@@ -2,7 +2,6 @@
 
 // Compute Core module: Executes instructions for a block of threads in SIMD fashion
 // Manages a block of threads, each with dedicated registers, ALU, and LSU
-// Uses a state machine (IDLE, FETCH, EXECUTE) to control instruction processing
 // Uses THREADS_PER_BLOCK for generate loop, with active_threads as runtime mask
 module compute_core #(
     parameter DATA_MEM_ADDR_BITS = 8,        // Data memory address width (256 rows)
