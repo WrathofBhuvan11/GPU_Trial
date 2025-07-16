@@ -2,6 +2,7 @@
 SIMD Based basic GPU Implementation  (Work in progress)
 
 (TODO- openLANE RTL-GDSII steps)
+openlane2 nixx setup
 ```
 gpu.sv
 ├── dcr.sv
