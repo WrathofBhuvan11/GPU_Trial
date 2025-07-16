@@ -34,7 +34,7 @@ module load_store_unit #(
 
     // State machine to handle memory operations
     always_ff @(posedge clk or negedge reset) begin
-        if (reset) begin
+        if (~reset) begin
             state <= IDLE;
             data_mem_read_valid <= 0;
             data_mem_write_valid <= 0;
