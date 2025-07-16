@@ -12,7 +12,7 @@ module dcr (
     output logic [7:0] thread_count            // Stored thread count
 );
   always_ff @(posedge clk or negedge reset) begin
-        if (reset) begin
+      if (~reset) begin
             thread_count <= 8'd0; // Reset thread count to 0
         end else if (device_control_write_enable) begin
             thread_count <= device_control_data; // Update thread count
