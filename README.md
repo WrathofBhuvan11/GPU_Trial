@@ -130,4 +130,3 @@ Functionality: Provides a register file, instantiated per thread.
 Responsibilities:
 Maintains 16 registers (R0–R15), with R13–R15 as read-only metadata (e.g., block_id, thread_id).
 Supports reading from two registers and writing to one per cycle.
-This modular structure ensures clarity and maintainability, aligning with the tiny GPU’s educational purpose.
