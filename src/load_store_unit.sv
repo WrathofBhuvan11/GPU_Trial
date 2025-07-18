@@ -24,18 +24,12 @@ module load_store_unit #(
 );
 
     // State machine states for managing load/store operations
-    typedef enum logic [1:0] {
-        IDLE,
-        LOAD,
-        STORE
-    } state_t;
-
-    state_t state;
+    lsu_state_t state;
 
     // State machine to handle memory operations
     always_ff @(posedge clk or negedge reset) begin
         if (~reset) begin
-            state <= IDLE;
+            state <= LSU_IDLE;
             data_mem_read_valid <= 0;
             data_mem_write_valid <= 0;
             lsu_done <= 0;
@@ -45,35 +39,35 @@ module load_store_unit #(
             data_mem_write_data <= 0;
         end else begin
             case (state)
-                IDLE: begin
+                LSU_IDLE: begin
                     lsu_done <= 0;
                     if (load_enable) begin
-                        state <= LOAD;
+                        state <= LSU_LOAD;
                         data_mem_read_valid <= 1;
                         data_mem_read_address <= address;
                     end else if (store_enable) begin
-                        state <= STORE;
+                        state <= LSU_STORE;
                         data_mem_write_valid <= 1;
                         data_mem_write_address <= address;
                         data_mem_write_data <= store_data;
                     end
                 end
-                LOAD: begin
+                LSU_LOAD: begin
                     if (data_mem_read_ready) begin
                         load_data <= data_mem_read_data;
                         data_mem_read_valid <= 0;
                         lsu_done <= 1;
-                        state <= IDLE;
+                        state <= LSU_IDLE;
                     end
                 end
-                STORE: begin
+                LSU_STORE: begin
                     if (data_mem_write_ready) begin
                         data_mem_write_valid <= 0;
                         lsu_done <= 1;
-                        state <= IDLE;
+                        state <= LSU_IDLE;
                     end
                 end
-                default: state <= IDLE;
+                default: state <= LSU_IDLE;
             endcase
         end
     end
