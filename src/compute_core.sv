@@ -45,13 +45,63 @@ module compute_core #(
     logic [THREADS_PER_BLOCK-1:0] write_enable;     // Register write enables
     logic [3:0] write_addr;                         // Register write address
     logic [THREADS_PER_BLOCK-1:0][7:0] alu_result; // ALU results
-    //logic [2:0][THREADS_PER_BLOCK-1:0] NZP;        // Per-thread NZP flags - (unused for now)
+    logic [THREADS_PER_BLOCK-1:0][2:0] NZP;        // Per-thread NZP flags
     logic [THREADS_PER_BLOCK-1:0] active_threads;   // Active thread mask
     logic fetch_enable;                             // Enable fetch unit
     logic fetch_done;                               // Fetch completion signal
     logic load_pc;                                  // Load new PC value
     logic [PROGRAM_MEM_ADDR_BITS-1:0] next_pc;      // Next PC value
     logic [THREADS_PER_BLOCK-1:0] lsu_done;         // LSU completion signals
+    logic [THREADS_PER_BLOCK-1:0][7:0] lsu_load_data; // Separate signal for LSU output to avoid multi-driver
+
+    // State machine for core execution
+    core_state_t core_state;
+
+    // State machine logic
+    always_ff @(posedge clk or negedge reset) begin
+        if (~reset) begin
+            core_state <= IDLE;
+            done <= 0;
+            fetch_enable <= 0;
+        end else begin
+            case (core_state)
+                IDLE: begin
+                    if (start) begin
+                        core_state <= FETCH;
+                        fetch_enable <= 1;
+                        done <= 0;
+                    end
+                end
+                FETCH: begin
+                    if (fetch_done) begin
+                        core_state <= DECODE;
+                        fetch_enable <= 0;
+                    end
+                end
+                DECODE: begin
+                    core_state <= EXECUTE;
+                end
+                EXECUTE: begin
+                    if (&lsu_done || !(is_ldr || is_str)) begin  // Wait for LSUs if memory op
+                        core_state <= WRITEBACK;
+                    end
+                end
+                WRITEBACK: begin
+                    if (is_halt) begin
+                        core_state <= HALT;
+                    end else begin
+                        core_state <= FETCH;
+                        fetch_enable <= 1;
+                    end
+                end
+                HALT: begin
+                    done <= 1;
+                    core_state <= IDLE;
+                end
+                default: core_state <= IDLE;
+            endcase
+        end
+    end
 
     // Submodule instances
     fetch #(.PROGRAM_MEM_ADDR_BITS(PROGRAM_MEM_ADDR_BITS), .PROGRAM_MEM_DATA_BITS(PROGRAM_MEM_DATA_BITS)) fetch_inst (
@@ -88,9 +138,21 @@ module compute_core #(
         .is_halt(is_halt)
     );
 
-    scheduler #(.THREADS_PER_BLOCK(THREADS_PER_BLOCK)) scheduler_inst (
+    scheduler #(.THREADS_PER_BLOCK(THREADS_PER_BLOCK),
+	        .PROGRAM_MEM_ADDR_BITS(PROGRAM_MEM_ADDR_BITS))
+    scheduler_inst (
+        .clk(clk),
+        .reset(reset),
         .thread_count(thread_count),
-        .active_threads(active_threads)
+        .is_branch(is_branch),
+        .condition(condition[2:0]),
+        .IMM8(IMM8),
+        .PC(PC),
+        .NZP(NZP),
+        .core_state(core_state),
+        .active_threads(active_threads),
+        .next_pc(next_pc),
+        .load_pc(load_pc)
     );
 
     program_counter #(.PROGRAM_MEM_ADDR_BITS(PROGRAM_MEM_ADDR_BITS)) pc_inst (
@@ -124,7 +186,7 @@ module compute_core #(
                 .B(reg_data2[t]),
                 .operation(opcode),
                 .result(alu_result[t]),
-                .NZP()
+                .NZP(NZP[t])
             );
 
             load_store_unit #(.DATA_MEM_ADDR_BITS(DATA_MEM_ADDR_BITS), .DATA_MEM_DATA_BITS(DATA_MEM_DATA_BITS)) lsu_inst (
@@ -134,7 +196,7 @@ module compute_core #(
                 .store_enable(is_str && active_threads[t]),
                 .address(reg_data1[t]),
                 .store_data(reg_data2[t]),
-                .load_data(write_data[t]),
+                .load_data(lsu_load_data[t]),
                 .data_mem_read_valid(data_mem_read_valid[t]),
                 .data_mem_read_address(data_mem_read_address[t]),
                 .data_mem_read_ready(data_mem_read_ready[t]),
@@ -147,5 +209,34 @@ module compute_core #(
             );
         end
     endgenerate
+
+    // Writeback control logic (sequential)
+    always_ff @(posedge clk or negedge reset) begin
+        if (~reset) begin
+            write_addr <= 4'b0;
+            for (int t = 0; t < THREADS_PER_BLOCK; t++) begin
+                write_enable[t] <= 1'b0;
+                write_data[t] <= 8'b0;
+            end
+        end else begin
+            write_addr <= Rd;
+            for (int t = 0; t < THREADS_PER_BLOCK; t++) begin
+                write_enable[t] <= 1'b0;
+                write_data[t] <= 8'b0;  // Default
+                if (active_threads[t] && (core_state == WRITEBACK)) begin
+                    if (is_add || is_sub || is_mul || is_div) begin
+                        write_enable[t] <= 1'b1;
+                        write_data[t] <= alu_result[t];
+                    end else if (is_const) begin
+                        write_enable[t] <= 1'b1;
+                        write_data[t] <= IMM8;
+                    end else if (is_ldr) begin
+                        write_enable[t] <= 1'b1;
+                        write_data[t] <= lsu_load_data[t];  // Mux LSU output here
+                    end
+                end
+            end
+        end
+    end
 
 endmodule
