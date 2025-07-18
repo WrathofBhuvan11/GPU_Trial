@@ -146,11 +146,12 @@ module gpu #(
         .done(done)
     );
     
-    // Compute Cores - inst 
-    logic [NUM_CORES-1:0][DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_address;
-    logic [NUM_CORES-1:0][DATA_MEM_ADDR_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_address;
-    logic [NUM_CORES-1:0][DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_read_data;
-    logic [NUM_CORES-1:0][DATA_MEM_DATA_BITS-1:0][THREADS_PER_BLOCK-1:0] core_lsu_write_data;
+    // Compute Cores - inst
+    logic [NUM_CORES-1:0][THREADS_PER_BLOCK-1:0][DATA_MEM_ADDR_BITS-1:0] core_lsu_read_address;
+    logic [NUM_CORES-1:0][THREADS_PER_BLOCK-1:0][DATA_MEM_ADDR_BITS-1:0] core_lsu_write_address;
+    logic [NUM_CORES-1:0][THREADS_PER_BLOCK-1:0][DATA_MEM_DATA_BITS-1:0] core_lsu_read_data;
+    logic [NUM_CORES-1:0][THREADS_PER_BLOCK-1:0][DATA_MEM_DATA_BITS-1:0] core_lsu_write_data;
+
     genvar i;
     generate
         for (i = 0; i < NUM_CORES; i = i + 1) begin : cores
