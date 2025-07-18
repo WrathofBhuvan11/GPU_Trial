@@ -1,5 +1,6 @@
 `default_nettype none
 `timescale 1ns/1ns
+
 // DUT - GPU
 // Top-level module for the GPU, integrating all submodules
 // Interfaces with external asynchronous memory using multi-channel read/write
