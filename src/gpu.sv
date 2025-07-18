@@ -26,17 +26,17 @@ module gpu #(
     input logic [7:0] device_control_data,    // Thread count data
     // Program Memory Interface
     output logic [PROGRAM_MEM_NUM_CHANNELS-1:0] program_mem_read_valid, // Program memory read requests
-    output logic [PROGRAM_MEM_ADDR_BITS-1:0][PROGRAM_MEM_NUM_CHANNELS-1:0] program_mem_read_address, // Program memory addresses
+    output logic [PROGRAM_MEM_NUM_CHANNELS-1:0][PROGRAM_MEM_ADDR_BITS-1:0] program_mem_read_address, // Program memory addresses
     input logic [PROGRAM_MEM_NUM_CHANNELS-1:0] program_mem_read_ready,  // Program memory ready signals
-    input logic [PROGRAM_MEM_DATA_BITS-1:0][PROGRAM_MEM_NUM_CHANNELS-1:0] program_mem_read_data, // Program memory data
+    input logic [PROGRAM_MEM_NUM_CHANNELS-1:0][PROGRAM_MEM_DATA_BITS-1:0] program_mem_read_data, // Program memory data
     // Data Memory Interface
     output logic [DATA_MEM_NUM_CHANNELS-1:0] data_mem_read_valid,       // Data memory read requests
-    output logic [DATA_MEM_ADDR_BITS-1:0][DATA_MEM_NUM_CHANNELS-1:0] data_mem_read_address, // Data memory read addresses
+    output logic [DATA_MEM_NUM_CHANNELS-1:0][DATA_MEM_ADDR_BITS-1:0] data_mem_read_address, // Data memory read addresses
     input logic [DATA_MEM_NUM_CHANNELS-1:0] data_mem_read_ready,        // Data memory read ready signals
-    input logic [DATA_MEM_DATA_BITS-1:0][DATA_MEM_NUM_CHANNELS-1:0] data_mem_read_data, // Data memory read data
+    input logic [DATA_MEM_NUM_CHANNELS-1:0][DATA_MEM_DATA_BITS-1:0] data_mem_read_data, // Data memory read data
     output logic [DATA_MEM_NUM_CHANNELS-1:0] data_mem_write_valid,      // Data memory write requests
-    output logic [DATA_MEM_ADDR_BITS-1:0][DATA_MEM_NUM_CHANNELS-1:0] data_mem_write_address, // Data memory write addresses
-    output logic [DATA_MEM_DATA_BITS-1:0][DATA_MEM_NUM_CHANNELS-1:0] data_mem_write_data, // Data memory write data
+    output logic [DATA_MEM_NUM_CHANNELS-1:0][DATA_MEM_ADDR_BITS-1:0] data_mem_write_address, // Data memory write addresses
+    output logic [DATA_MEM_NUM_CHANNELS-1:0][DATA_MEM_DATA_BITS-1:0] data_mem_write_data, // Data memory write data
     input logic [DATA_MEM_NUM_CHANNELS-1:0] data_mem_write_ready        // Data memory write ready signals
 );
     // Internal signals
@@ -44,24 +44,24 @@ module gpu #(
     logic [NUM_CORES-1:0] core_start; // Start signals for each core
     logic [NUM_CORES-1:0] core_reset; // Reset signals for each core
     logic [NUM_CORES-1:0] core_done;  // Done signals from each core
-    logic [7:0][NUM_CORES-1:0] core_block_id; // Block IDs for each core
-    logic [$clog2(THREADS_PER_BLOCK):0][NUM_CORES-1:0] core_thread_count; // Thread counts for each core
+    logic [NUM_CORES-1:0][7:0] core_block_id; // Block IDs for each core
+    logic [NUM_CORES-1:0][$clog2(THREADS_PER_BLOCK):0] core_thread_count; // Thread counts for each core
 
     // LSU to Data Memory Controller Channels
     localparam NUM_LSUS = NUM_CORES * THREADS_PER_BLOCK; // Total number of LSUs
     logic [NUM_LSUS-1:0] lsu_read_valid; // LSU read requests
-    logic [DATA_MEM_ADDR_BITS-1:0][NUM_LSUS-1:0] lsu_read_address; // LSU read addresses
+    logic [NUM_LSUS-1:0][DATA_MEM_ADDR_BITS-1:0] lsu_read_address; // LSU read addresses
     logic [NUM_LSUS-1:0] lsu_read_ready; // LSU read ready signals
-    logic [DATA_MEM_DATA_BITS-1:0][NUM_LSUS-1:0] lsu_read_data; // LSU read data
+    logic [NUM_LSUS-1:0][DATA_MEM_DATA_BITS-1:0] lsu_read_data; // LSU read data
     logic [NUM_LSUS-1:0] lsu_write_valid; // LSU write requests
-    logic [DATA_MEM_ADDR_BITS-1:0][NUM_LSUS-1:0] lsu_write_address; // LSU write addresses
-    logic [DATA_MEM_DATA_BITS-1:0][NUM_LSUS-1:0] lsu_write_data; // LSU write data
+    logic [NUM_LSUS-1:0][DATA_MEM_ADDR_BITS-1:0] lsu_write_address; // LSU write addresses
+    logic [NUM_LSUS-1:0][DATA_MEM_DATA_BITS-1:0] lsu_write_data; // LSU write data
     logic [NUM_LSUS-1:0] lsu_write_ready; // LSU write ready signals
 
     // Fetcher to Program Memory Controller Channels
     localparam NUM_FETCHERS = NUM_CORES; // Total number of fetchers
     logic [NUM_FETCHERS-1:0] fetcher_read_valid; // Fetcher read requests
-    logic [PROGRAM_MEM_ADDR_BITS-1:0][NUM_FETCHERS-1:0] fetcher_read_address; // Fetcher read addresses
+    logic [NUM_FETCHERS-1:0][PROGRAM_MEM_ADDR_BITS-1:0] fetcher_read_address; // Fetcher read addresses
     logic [NUM_FETCHERS-1:0] fetcher_read_ready; // Fetcher read ready signals
     logic [PROGRAM_MEM_DATA_BITS-1:0][NUM_FETCHERS-1:0] fetcher_read_data; // Fetcher read data
 
