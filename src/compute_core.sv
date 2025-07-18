@@ -39,12 +39,12 @@ module compute_core #(
     logic [7:0] IMM8;                         // Immediate value
     logic [3:0] condition;                    // Condition codes for BRNzp
     logic is_nop, is_branch, is_cmp, is_add, is_sub, is_mul, is_div, is_ldr, is_str, is_const, is_halt; // Control signals
-    logic [7:0][THREADS_PER_BLOCK-1:0] reg_data1; // First operand data
-    logic [7:0][THREADS_PER_BLOCK-1:0] reg_data2; // Second operand data
-    logic [7:0][THREADS_PER_BLOCK-1:0] write_data; // Data to write to registers
+    logic [THREADS_PER_BLOCK-1:0][7:0] reg_data1; // First operand data
+    logic [THREADS_PER_BLOCK-1:0][7:0] reg_data2; // Second operand data
+    logic [THREADS_PER_BLOCK-1:0][7:0] write_data; // Data to write to registers
     logic [THREADS_PER_BLOCK-1:0] write_enable;     // Register write enables
     logic [3:0] write_addr;                         // Register write address
-    logic [7:0][THREADS_PER_BLOCK-1:0] alu_result; // ALU results
+    logic [THREADS_PER_BLOCK-1:0][7:0] alu_result; // ALU results
     //logic [2:0][THREADS_PER_BLOCK-1:0] NZP;        // Per-thread NZP flags - (unused for now)
     logic [THREADS_PER_BLOCK-1:0] active_threads;   // Active thread mask
     logic fetch_enable;                             // Enable fetch unit
