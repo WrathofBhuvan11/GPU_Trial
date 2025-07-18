@@ -17,45 +17,38 @@ module fetch #(
     output logic fetch_done // Indicates fetch completion
 );
 
-    // State machine states
-    typedef enum logic [1:0] {
-        IDLE,
-        REQUEST,
-        WAIT_READY
-    } state_t;
-
-    state_t state;
+    fetch_state_t state;
 
     // State machine to manage fetch process
     always_ff @(posedge clk or negedge reset) begin
         if (~reset) begin
-            state <= IDLE;
+            state <= FETCH_IDLE;
             program_mem_read_valid <= 0;
             program_mem_read_address <= 0;
             instruction <= 0;
             fetch_done <= 0;
         end else begin
             case (state)
-                IDLE: begin
+                FETCH_IDLE: begin
                     if (enable) begin
-                        state <= REQUEST;
+                        state <= FETCH_REQUEST;
                         program_mem_read_valid <= 1;
                         program_mem_read_address <= PC;
                         fetch_done <= 0;
                     end
                 end
-                REQUEST: begin
+                FETCH_REQUEST: begin
                     if (program_mem_read_ready) begin
                         instruction <= program_mem_read_data;
-                        state <= WAIT_READY;
+                        state <= FETCH_WAIT_READY;
                     end
                 end
-                WAIT_READY: begin
+                FETCH_WAIT_READY: begin
                     program_mem_read_valid <= 0;
                     fetch_done <= 1;
-                    state <= IDLE;
+                    state <= FETCH_IDLE;
                 end
-                default: state <= IDLE;
+                default: state <= FETCH_IDLE;
             endcase
         end
     end
