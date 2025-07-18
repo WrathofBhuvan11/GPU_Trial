@@ -15,21 +15,21 @@ module controller #(
     input reset,                 // Reset signal
     // Consumer Interface
     input logic [NUM_CONSUMERS-1:0] consumer_read_valid, // Read request valid signals
-    input logic [ADDR_BITS-1:0][NUM_CONSUMERS-1:0] consumer_read_address, // Read addresses
+    input logic [NUM_CONSUMERS-1:0][ADDR_BITS-1:0] consumer_read_address, // Read addresses
     output logic [NUM_CONSUMERS-1:0] consumer_read_ready, // Read ready signals
-    output logic [DATA_BITS-1:0][NUM_CONSUMERS-1:0] consumer_read_data, // Read data
+    output logic [NUM_CONSUMERS-1:0][DATA_BITS-1:0] consumer_read_data, // Read data
     input logic [NUM_CONSUMERS-1:0] consumer_write_valid, // Write request valid signals
-    input logic [ADDR_BITS-1:0][NUM_CONSUMERS-1:0] consumer_write_address, // Write addresses
-    input logic [DATA_BITS-1:0][NUM_CONSUMERS-1:0] consumer_write_data, // Write data
+    input logic [NUM_CONSUMERS-1:0][ADDR_BITS-1:0] consumer_write_address, // Write addresses
+    input logic [NUM_CONSUMERS-1:0][DATA_BITS-1:0] consumer_write_data, // Write data
     output logic [NUM_CONSUMERS-1:0] consumer_write_ready, // Write ready signals
     // Memory Interface
     output logic [NUM_CHANNELS-1:0] mem_read_valid, // Memory read request valid signals
-    output logic [ADDR_BITS-1:0][NUM_CHANNELS-1:0] mem_read_address, // Memory read addresses
+    output logic [NUM_CHANNELS-1:0][ADDR_BITS-1:0] mem_read_address, // Memory read addresses
     input logic [NUM_CHANNELS-1:0] mem_read_ready, // Memory read ready signals
-    input logic [DATA_BITS-1:0][NUM_CHANNELS-1:0] mem_read_data, // Memory read data
+    input logic [NUM_CHANNELS-1:0][DATA_BITS-1:0] mem_read_data, // Memory read data
     output logic [NUM_CHANNELS-1:0] mem_write_valid, // Memory write request valid signals
-    output logic [ADDR_BITS-1:0][NUM_CHANNELS-1:0] mem_write_address, // Memory write addresses
-    output logic [DATA_BITS-1:0][NUM_CHANNELS-1:0] mem_write_data, // Memory write data
+    output logic [NUM_CHANNELS-1:0][ADDR_BITS-1:0] mem_write_address, // Memory write addresses
+    output logic [NUM_CHANNELS-1:0][DATA_BITS-1:0] mem_write_data, // Memory write data
     input logic [NUM_CHANNELS-1:0] mem_write_ready // Memory write ready signals
 );
 
