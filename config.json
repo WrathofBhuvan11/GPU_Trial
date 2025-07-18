@@ -1,6 +1,8 @@
 {
   "DESIGN_NAME": "gpu",
-  "VERILOG_FILES": [ "dir::src/compute_core.sv",
+  "VERILOG_FILES": 
+ [
+  "dir::src/compute_core.sv",
   "dir::src/controller.sv",
   "dir::src/dcr.sv",
   "dir::src/decoder.sv",
