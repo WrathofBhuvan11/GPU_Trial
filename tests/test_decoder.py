@@ -71,16 +71,18 @@ def golden_decoder(instr):
         'is_ldr': is_ldr, 'is_str': is_str, 'is_const': is_const, 'is_halt': is_halt
     }
 
+
 @cocotb.test()
 async def test_decoder(dut):
     """Test decoder module with random instructions."""
     # Seed for reproducibility (3rd-order: Allows debugging failures)
+    decoder_dut = gpu_dut.cores[0].core_instance.decoder_inst  #gpu -> generate cores[0] -> compute_core -> decoder_inst
     random.seed(42)
 
     for _ in range(NUM_TESTS):
         # Generate random 16-bit instruction
         instr_val = random.randint(0, 0xFFFF)
-        dut.instruction.value = BinaryValue(instr_val, n_bits=16)
+        decoder_dut.instruction.value = BinaryValue(instr_val, n_bits=16)
 
         # Wait for comb logic to settle (minimal delay)
         await Timer(1, units='ns')
