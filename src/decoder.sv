@@ -21,7 +21,7 @@ module decoder (
     output logic is_const, // Indicates CONST instruction
     output logic is_halt // Indicates HALT instruction
 );
-
+//##TODO fix issues seq
     // Combinational decoding logic
     always_comb begin
         // Extract opcode from instruction
