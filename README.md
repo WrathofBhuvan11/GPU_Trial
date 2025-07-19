@@ -134,6 +134,7 @@ Supports reading from two registers and writing to one per cycle.
 
 ### ================================================================================================================
 ## Verifcation plans using cocotb python
+```
 tests/                        
 ├── __init__.py                # Makes tests a package
 ├── test_decoder.py            # functions: Random instructions, assert decoded signals
@@ -148,3 +149,4 @@ tests/
 ├── test_dispatch.py           # functions: Block assignment, partials, multi-wave
 ├── test_compute_core.py       # Integration: Full core flow (program exec, SIMD)
 └── test_gpu.py                # System: Multi-core kernel, dispatch + mem contention
+```
