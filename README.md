@@ -132,7 +132,7 @@ Maintains 16 registers (R0–R15), with R13–R15 as read-only metadata (e.g., b
 Supports reading from two registers and writing to one per cycle.
 
 
-### ================================================================================================================
+### ==================================================================================
 ## Verifcation plans using cocotb python
 ```
 tests/                        
