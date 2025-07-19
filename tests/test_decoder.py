@@ -6,7 +6,7 @@ from cocotb.binary import BinaryValue
 import random
 from cocotb_config import *  # Import global config
 
-# Number of test iterations (Enough for coverage; adjustable for speed)
+# Number of test iterations
 NUM_TESTS = 1000
 
 # Golden model: Python function to decode instruction (for scoreboard)
