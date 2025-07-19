@@ -1,7 +1,7 @@
 # GPU_Trial
 SIMD Based basic GPU Implementation  (Work in progress)
 
-(TODO- openLANE RTL-GDSII steps)
+(openLANE RTL-GDSII steps) & cocoTB verification
 openlane2 nixx setup
 ```
 gpu.sv
