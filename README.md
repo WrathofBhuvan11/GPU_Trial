@@ -130,3 +130,21 @@ Functionality: Provides a register file, instantiated per thread.
 Responsibilities:
 Maintains 16 registers (R0–R15), with R13–R15 as read-only metadata (e.g., block_id, thread_id).
 Supports reading from two registers and writing to one per cycle.
+
+
+### ================================================================================================================
+## Verifcation plans using cocotb python
+tests/                        
+├── __init__.py                # Makes tests a package
+├── test_decoder.py            # functions: Random instructions, assert decoded signals
+├── test_simple_alu.py         # functions: Ops w/ random A/B
+├── test_fetch.py              # functions: Handshake w/ backpressure
+├── test_load_store_unit.py    # functions: Load/store w/ mem emulation
+├── test_scheduler.py          # functions: Active masks, branch logic (divergence edges)
+├── test_dcr.py                # functions: Simple reg writes
+├── test_controller.py         # functions: Arbitration (round-robin, contention)
+├── test_program_counter.py    # functions: Inc/branch/reset
+├── test_registers.py          # functions: Read/write, specials protection
+├── test_dispatch.py           # functions: Block assignment, partials, multi-wave
+├── test_compute_core.py       # Integration: Full core flow (program exec, SIMD)
+└── test_gpu.py                # System: Multi-core kernel, dispatch + mem contention
