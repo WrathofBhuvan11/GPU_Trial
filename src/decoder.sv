@@ -47,7 +47,7 @@ module decoder (
         end else begin
             // Extract opcode
             opcode <= instruction[15:12];
-            // Full assignments per case (no separate init, avoids latches)
+            // Full assignments per case
             case (instruction[15:12])
                 4'b0000: begin  // NOP
                     Rd <= 4'b0;
