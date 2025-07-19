@@ -1,10 +1,12 @@
 # tests/test_decoder.py
 # Cocotb test for decoder.sv: Verifies instruction decoding.
+
 import cocotb
-from cocotb.triggers import Timer
+from cocotb.clock import Clock
+from cocotb.triggers import RisingEdge, Timer
 from cocotb.binary import BinaryValue
 import random
-from cocotb_config import *  # Import global config
+from cocotb_config import * 
 
 # Number of test iterations
 NUM_TESTS = 1000
@@ -71,12 +73,21 @@ def golden_decoder(instr):
         'is_ldr': is_ldr, 'is_str': is_str, 'is_const': is_const, 'is_halt': is_halt
     }
 
-
 @cocotb.test()
 async def test_decoder(dut):
     """Test decoder module with random instructions."""
-    # Seed for reproducibility
-    decoder_dut = gpu_dut.cores[0].core_instance.decoder_inst  #gpu -> generate cores[0] -> compute_core -> decoder_inst
+    # Access submodule
+    # Hierarchy: gpu -> generate cores[0] -> compute_core instance -> decoder_inst
+    decoder_dut = gpu_dut.cores[0].core_instance.decoder_inst  # Adjust if instantiation names differ
+
+    # Clock/reset setup
+    clock = Clock(decoder_dut.clk, 25, units="ns")
+    cocotb.start_soon(clock.start())
+    decoder_dut.reset.value = 0  # Assert reset (active-low)
+    await RisingEdge(dut.clk)
+    decoder_dut.reset.value = 1  # Deassert
+
+    # Seed for reproducibility (3rd-order: Enables debugging failures; randomize in regression)
     random.seed(42)
 
     for _ in range(NUM_TESTS):
@@ -84,33 +95,34 @@ async def test_decoder(dut):
         instr_val = random.randint(0, 0xFFFF)
         decoder_dut.instruction.value = BinaryValue(instr_val, n_bits=16)
 
-        # Wait for comb logic to settle (minimal delay)
-        await Timer(1, units='ns')
+        # Wait for register update (replaces comb Timer)
+        await RisingEdge(dut.clk)
 
         # Get DUT outputs
         dut_out = {
-            'opcode': int(dut.opcode.value),
-            'rd': int(dut.Rd.value),
-            'rs': int(dut.Rs.value),
-            'rt': int(dut.Rt.value),
-            'imm8': int(dut.IMM8.value),
-            'cond': int(dut.condition.value),
-            'is_nop': int(dut.is_nop.value),
-            'is_branch': int(dut.is_branch.value),
-            'is_cmp': int(dut.is_cmp.value),
-            'is_add': int(dut.is_add.value),
-            'is_sub': int(dut.is_sub.value),
-            'is_mul': int(dut.is_mul.value),
-            'is_div': int(dut.is_div.value),
-            'is_ldr': int(dut.is_ldr.value),
-            'is_str': int(dut.is_str.value),
-            'is_const': int(dut.is_const.value),
-            'is_halt': int(dut.is_halt.value)
+            'opcode': int(decoder_dut.opcode.value),
+            'rd': int(decoder_dut.Rd.value),
+            'rs': int(decoder_dut.Rs.value),
+            'rt': int(decoder_dut.Rt.value),
+            'imm8': int(decoder_dut.IMM8.value),
+            'cond': int(decoder_dut.condition.value),
+            'is_nop': int(decoder_dut.is_nop.value),
+            'is_branch': int(decoder_dut.is_branch.value),
+            'is_cmp': int(decoder_dut.is_cmp.value),
+            'is_add': int(decoder_dut.is_add.value),
+            'is_sub': int(decoder_dut.is_sub.value),
+            'is_mul': int(decoder_dut.is_mul.value),
+            'is_div': int(decoder_dut.is_div.value),
+            'is_ldr': int(decoder_dut.is_ldr.value),
+            'is_str': int(decoder_dut.is_str.value),
+            'is_const': int(decoder_dut.is_const.value),
+            'is_halt': int(decoder_dut.is_halt.value)
         }
 
         # Golden model prediction
         golden = golden_decoder(instr_val)
 
-        # Assert equality
+        # Assert equality (2nd-order: Covers all fields, including defaults)
         assert dut_out == golden, f"Mismatch for instr {hex(instr_val)}: DUT {dut_out} vs Golden {golden}"
+
     dut._log.info(f"Passed {NUM_TESTS} random tests.")
