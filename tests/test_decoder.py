@@ -75,7 +75,7 @@ def golden_decoder(instr):
 @cocotb.test()
 async def test_decoder(dut):
     """Test decoder module with random instructions."""
-    # Seed for reproducibility (3rd-order: Allows debugging failures)
+    # Seed for reproducibility
     decoder_dut = gpu_dut.cores[0].core_instance.decoder_inst  #gpu -> generate cores[0] -> compute_core -> decoder_inst
     random.seed(42)
 
@@ -113,5 +113,4 @@ async def test_decoder(dut):
 
         # Assert equality
         assert dut_out == golden, f"Mismatch for instr {hex(instr_val)}: DUT {dut_out} vs Golden {golden}"
-
     dut._log.info(f"Passed {NUM_TESTS} random tests.")
