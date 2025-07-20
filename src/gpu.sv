@@ -14,7 +14,7 @@ module gpu #(
     parameter PROGRAM_MEM_ADDR_BITS = 8,     // Program memory address width (256 rows)
     parameter PROGRAM_MEM_DATA_BITS = 16,    // Program memory data width (16-bit instructions)
     parameter PROGRAM_MEM_NUM_CHANNELS = 1,  // Number of concurrent program memory channels
-    parameter NUM_CORES = 2,                 // Number of compute cores
+    parameter NUM_CORES = 32,                 // Number of compute cores
     parameter THREADS_PER_BLOCK = 4          // Number of threads per block
 ) (
     input clk,                          // Clock signal
