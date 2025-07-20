@@ -11,8 +11,8 @@ module controller #(
     parameter NUM_CHANNELS = 4,       // Number of memory channels
     parameter WRITE_ENABLE = 1        // Enable write operations (1 for data memory, 0 for program memory)
 ) (
-    input logic clk,                   // Clock signal
-    input logic reset,                 // Reset signal
+    input clk,                   // Clock signal
+    input reset,                 // Reset signal
     // Consumer Interface
     input logic [NUM_CONSUMERS-1:0] consumer_read_valid, // Read request valid signals
     input logic [NUM_CONSUMERS-1:0][ADDR_BITS-1:0] consumer_read_address, // Read addresses
