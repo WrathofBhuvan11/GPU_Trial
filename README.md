@@ -131,6 +131,9 @@ Responsibilities:
 Maintains 16 registers (R0–R15), with R13–R15 as read-only metadata (e.g., block_id, thread_id).
 Supports reading from two registers and writing to one per cycle.
 
+## Final gpu.gds
+<img width="1920" height="973" alt="image" src="https://github.com/user-attachments/assets/1583d5dd-d5a5-47a6-9df3-30552ff81386" />
+
 
 ### ========================================================================
 ## Verifcation plans using cocotb python
